@@ -13,6 +13,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('logout ', [AuthController::class, 'logout']);
 
 });
-Route::post('login', [AuthController::class, 'login']);
+Route::post('login', [AuthController::class, 'login'])->middleware('throttle:5,1');
 Route::post('register', [AuthController::class, 'register']);
 

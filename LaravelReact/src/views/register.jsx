@@ -3,6 +3,8 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import axiosClient from "../axiosClient";
 import { useStateContext } from "../contexts/contextprovider";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 export default function Register() {
@@ -20,13 +22,18 @@ export default function Register() {
             password: passwordRef.current.value,
         };
 
-        axiosClient.post("/login", payload).then(({ data }) => {
+        axiosClient.post("/register", payload).then(({ data }) => {
             setUser(data.user);
             setToken(data.token);
+            toast.success("Registration successful! Welcome to our platform.");
         }).catch(err => {
             const response = err.response;
             if(response && response.status === 422){
-                console.log(response.data.errors);
+                const errorMessages = Object.values(response.data.errors).flat().join(", ");
+                // Show error message
+                toast.error(`Error: ${errorMessages}`);
+            } else {
+                toast.error("Something went wrong. Please try again.");
             }
         });
     };
@@ -50,6 +57,7 @@ export default function Register() {
                     </p>
                 </form>
             </div>
+            <ToastContainer />
         </div>
     );
 }

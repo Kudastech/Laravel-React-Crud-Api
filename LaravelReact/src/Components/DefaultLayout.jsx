@@ -1,8 +1,10 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useStateContext } from "../contexts/contextprovider";
+import { useEffect } from "react";
+import axiosClient from "../axiosClient";
 
 export default function DefaultLayout() {
-    const { user, token } = useStateContext();
+    const { user, token, setUser, setToken } = useStateContext();
     if (!token) {
         return <Navigate to="/login" />;
     }
@@ -15,6 +17,15 @@ export default function DefaultLayout() {
            setToken(null)
         })
     }
+
+    useEffect(() => {
+        axiosClient.get('/user')
+            .then(({ data }) => {
+                setUser(data)
+            })
+    }, []);
+
+
     return (
         <div id="defaultLayout">
         <div className="content">
